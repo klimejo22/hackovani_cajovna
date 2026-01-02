@@ -1,6 +1,10 @@
 <?php
+$charset = "abcdefghijklmnopqrstuvwxyz0123456789";
+
 function bruteForceIterative(string $targetHash, int $length): ?string {
     global $charset;
+    $pepper = "cajovna-2025-";
+
     $base = strlen($charset);
     $max = pow($base, $length);
 
@@ -13,10 +17,18 @@ function bruteForceIterative(string $targetHash, int $length): ?string {
             $n = intdiv($n, $base);
         }
 
-        if (hashPassword($candidate) === $targetHash) {
+        if (hashPassword($pepper . $candidate) === $targetHash) {
             return $candidate;
         }
     }
 
+    return null;
+}
+
+function bruteForce(string $hash, int $maxLength): ?string {
+    for ($l = 1; $l <= $maxLength; $l++) {
+        $res = bruteForceIterative($hash, $l);
+        if ($res !== null) return $res;
+    }
     return null;
 }

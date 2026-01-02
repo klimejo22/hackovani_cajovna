@@ -1,6 +1,6 @@
 <?php
 // Vraci zacatky pro cally
-// header("Content-Type: application/json; charset=utf-8");
+header("Content-Type: application/json; charset=utf-8");
 require_once "lib/csvToArray.php";
 $filename = "data.csv";
 
@@ -18,8 +18,6 @@ $length_data = count($data);
 
 $returnVal = [];
 for ($i=0; $i < $length_data; $i = $i + GetIncrement($length_data)) {
-    // echo $i;
-    // echo "<br>";
     $returnVal[] = $i;
 }
 
