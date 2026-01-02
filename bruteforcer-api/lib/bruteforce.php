@@ -1,6 +1,7 @@
 <?php
 $charset = "abcdefghijklmnopqrstuvwxyz0123456789";
 
+// Chat
 function bruteForceIterative(string $targetHash, int $length): ?string {
     global $charset;
     $pepper = "cajovna-2025-";
@@ -17,7 +18,7 @@ function bruteForceIterative(string $targetHash, int $length): ?string {
             $n = intdiv($n, $base);
         }
 
-        if (hashPassword($pepper . $candidate) === $targetHash) {
+        if (hash('sha256', $pepper . $candidate) === $targetHash) {
             return $candidate;
         }
     }
