@@ -17,7 +17,7 @@ $data = csvToArray("users.csv");
 $length_data = count($data);
 
 $returnVal = [];
-for ($i=0; $i < $length_data; $i = $i + GetIncrement($length_data)) {
+for ($i=1; $i < $length_data; $i = $i + GetIncrement($length_data)) {
     $returnVal[] = $i;
 }
 
