@@ -1,0 +1,1 @@
+export const baseUrl = "https://www.junglediff.cz/bruteforcer-api/";
