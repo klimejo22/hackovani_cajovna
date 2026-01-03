@@ -6,12 +6,21 @@ function App() {
   const [hash, setHash] = useState('')
   const [result, setResult] = useState('')
 
+  const hashNotValid = (hash: string) => {  // Sajmonos: upraveno
+    return hash.match(/[a-f0-9]/g)?.length != 64 || hash.length!=64
+  }
   
   const handleCheckHash = async () => {
     if (!hash) {
-      setResult('Zadej hash!')
+      setResult("Zadej hash!")
       return
     }
+
+    if (hashNotValid(hash)) {
+      setResult("Hash neni validni!")
+      return
+    }
+    
     setResult("Nacitani....")
     console.log("Hash: " + hash)
     const res = await fetch(baseUrl + "bruteforceOne.php", {
