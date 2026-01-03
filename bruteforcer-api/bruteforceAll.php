@@ -2,6 +2,11 @@
 require_once "lib/bruteforce.php";
 require_once "lib/csvToArray.php";
 header("Content-Type: application/json; charset=utf-8");
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+
+set_time_limit(0);
 
 function normalizeString($str) {
     $str = mb_strtolower($str, 'UTF-8');
@@ -15,25 +20,56 @@ function normalizeString($str) {
         'Ů'=>'u','Ý'=>'y','Ž'=>'z'
     ];
 
-    $str = strtr($str, $map);
-
-    return $str;
+    return strtr($str, $map);
 }
 
 $data = csvToArray("users.csv");
-
-$input = json_decode(file_get_contents("php://input"), true);
-
-// echo "<pre>";
-// var_dump($data);
-// echo "</pre>";
-
 $length_data = count($data);
 
-$returnVal = [];
-for ($i=1; $i < $length_data; $i++) {
-    $returnVal[normalizeString($data[$i][0])] = "cajovna-2025-".bruteForce($data[$i][2], 5);
+$path = "jsons/all.txt";
+
+/**
+ * RESUME – načti už hotové uživatele
+ */
+$done = [];
+if (file_exists($path)) {
+    foreach (file($path, FILE_IGNORE_NEW_LINES) as $line) {
+        if (strpos($line, ":") !== false) {
+            [$u] = explode(":", $line, 2);
+            $done[$u] = true;
+        }
+    }
 }
-$json = json_encode($returnVal);
-file_put_contents("jsons/all.json", $json);
-echo $json;
+
+$fp = fopen($path, "a");
+
+/**
+ * HLAVNÍ LOOP
+ */
+for ($i = 1; $i < $length_data; $i++) {
+    $user = normalizeString($data[$i][0]);
+
+    if (isset($done[$user])) {
+        continue; // už hotové
+    }
+
+    $password = "cajovna-2025-" . bruteForce($data[$i][2], 5);
+
+    fwrite($fp, $user . ":" . $password . PHP_EOL);
+    fflush($fp); // 🔥 okamžitý zápis na disk
+}
+
+fclose($fp);
+
+/**
+ * Volitelně: převod textáku na JSON (jen pro výstup)
+ */
+$result = [];
+foreach (file($path, FILE_IGNORE_NEW_LINES) as $line) {
+    if (strpos($line, ":") !== false) {
+        [$u, $p] = explode(":", $line, 2);
+        $result[$u] = $p;
+    }
+}
+
+echo json_encode("DONE");

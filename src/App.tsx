@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { baseUrl } from './utils/config'
+import ComputeAll from './components/ComputeAll'
 
 function App() {
   const [hash, setHash] = useState('')
@@ -11,7 +12,7 @@ function App() {
       setResult('Zadej hash!')
       return
     }
-    
+    setResult("Nacitani....")
     console.log("Hash: " + hash)
     const res = await fetch(baseUrl + "bruteforceOne.php", {
       method: "POST",
@@ -32,7 +33,8 @@ function App() {
         value={hash}
         onChange={(e) => setHash(e.target.value)}
       />
-      <button onClick={handleCheckHash}>Zkontrolovat</button>
+      <button onClick={handleCheckHash}>Odhashovat</button>
+      <ComputeAll setResult={setResult}></ComputeAll>
       <div>Vysledek je: {result}</div>
     </>
   )
