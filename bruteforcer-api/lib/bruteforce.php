@@ -4,7 +4,7 @@ require_once "lib/db.php";
 
 $charset = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-// Chat - modifikovano
+// Chat - modifikovano (algoritmus pomoci chata vse ostatni ja)
 function bruteForceIterative(string $targetHash, int $length): ?string {
     global $charset;
     $pepper = "cajovna-2025-";

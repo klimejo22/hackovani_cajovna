@@ -14,7 +14,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 ini_set('max_execution_time', '0');
 set_time_limit(0);
 ignore_user_abort(true);
-
+//
 
 function normalizeString($str) {
     $str = mb_strtolower($str, 'UTF-8');
@@ -34,25 +34,35 @@ function normalizeString($str) {
 $data = csvToArray("users.csv");
 $length_data = count($data);
 
-$path = "jsons/all.txt";
+$filename = time();
+$path = "jsons/".$filename.".json";
 
 
-$fp = fopen($path, "a");    // Chat
+$fp = fopen($path, "a");
+
+
+$dehashedStrings = [];
 
 for ($i = 1; $i < $length_data; $i++) {
     $user = normalizeString($data[$i][0]);
 
-    $password = "cajovna-2025-" . bruteForce($data[$i][2], 10);
+    $password = bruteForce($data[$i][2], 10);
 
-    // Chat
-    fwrite($fp, $user . ":" . $password . PHP_EOL);
-    fflush($fp);
-
+    if ($password != null) {
+        $dehashedStrings[$user] = $password;
+    } else {
+        $dehashedStrings[$user] = "Heslo se nepodarilo rozhashovat";
+    }
     
 }
 
-// Chat
+fwrite($fp, json_encode($dehashedStrings, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));     // Chat
+
 fclose($fp);
 
 
-echo json_encode("DONE");
+echo json_encode([
+    "Status" => "DONE",
+    "Path" => "https://www.junglediff.cz/bruteforcer-api/".$path,
+    "Passwords" => $dehashedStrings,
+]);
