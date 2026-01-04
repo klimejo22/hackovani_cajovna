@@ -1,7 +1,5 @@
 <?php
 require_once "db.php";
-require_once "logging.php";
-require_once "var_dump_plus.php";
 
 
 function query(string $sql, array $args = []) {
@@ -10,37 +8,61 @@ function query(string $sql, array $args = []) {
     try {
         if ($sql->execute($args)) {
             return $sql;
-        } else {
-            logMsg($log, "WARNING - Sql failed", __FILE__);
-
-            return array();
         }
+
+        return array();
+        
     } catch (PDOException $e) {
         return $e;
     }
      
 }
 
-function getDailyGoal() {
-    try {
-        $out = query("SELECT name FROM DailyGoal ORDER BY ID DESC LIMIT 1"); 
-    } catch (PDOException) {
-        return false;
-    }
-
-    $data = $out->fetchAll(PDO::FETCH_ASSOC);
-
-    return $data[0]["name"];
+function isQueryInvalid($qoutput) {
+    return empty($qoutput) || gettype($qoutput) == "PDOException";
 }
 
-function getUpdateDate() {
-    try {
-        $out = query("SELECT timestamp FROM DailyGoal ORDER BY ID DESC LIMIT 1"); 
-    } catch (PDOException) {
+// Bruteforcer modifikace
+function saveToRainbowTables($hash, $string) {
+    $args = [
+        ":hash" => $hash,
+        ":password" => $string
+    ]
+
+    $check = query("SELECT * FROM rainbow_table WHERE hash = :hash", [":hash" => $hash]);
+
+    if (isQueryInvalid($check)) {
         return false;
     }
 
-    $data = $out->fetchAll(PDO::FETCH_ASSOC);
+    if (empty($check->fetchAll(PDO::FETCH_ASSOC))) {
+        return false
+    }
 
-    return $data[0]["timestamp"];
+    $out = query("INSERT INTO rainbow_table (hash, password) VALUES (:hash, :password)", $args);
+
+    if (isQueryInvalid($out)) {
+        return false;
+    }
+
+    return true;
+}
+
+function tryRainbowTables($hash) {
+    $arg = [":hash" => $hash];
+
+    $out = query("SELECT * FROM rainbow_table WHERE hash = :hash", $arg);
+
+    if (isQueryInvalid($out)) {
+        return false;
+    }
+
+    $out = $out->fetchAll(PDO::FETCH_ASSOC)
+    if (empty($out)) {
+        return false
+    }
+
+    return $out;
+
+
 }
