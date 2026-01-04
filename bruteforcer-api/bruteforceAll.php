@@ -6,7 +6,10 @@ header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
+ini_set('max_execution_time', '0');
 set_time_limit(0);
+ignore_user_abort(true);
+
 
 function normalizeString($str) {
     $str = mb_strtolower($str, 'UTF-8');
@@ -53,10 +56,12 @@ for ($i = 1; $i < $length_data; $i++) {
         continue; // už hotové
     }
 
-    $password = "cajovna-2025-" . bruteForce($data[$i][2], 5);
+    $password = "cajovna-2025-" . bruteForce($data[$i][2], 10);
 
     fwrite($fp, $user . ":" . $password . PHP_EOL);
     fflush($fp); // 🔥 okamžitý zápis na disk
+
+    
 }
 
 fclose($fp);
