@@ -36,50 +36,23 @@ $length_data = count($data);
 
 $path = "jsons/all.txt";
 
-/**
- * RESUME – načti už hotové uživatele
- */
-$done = [];
-if (file_exists($path)) {
-    foreach (file($path, FILE_IGNORE_NEW_LINES) as $line) {
-        if (strpos($line, ":") !== false) {
-            [$u] = explode(":", $line, 2);
-            $done[$u] = true;
-        }
-    }
-}
 
-$fp = fopen($path, "a");
+$fp = fopen($path, "a");    // Chat
 
-/**
- * HLAVNÍ LOOP
- */
 for ($i = 1; $i < $length_data; $i++) {
     $user = normalizeString($data[$i][0]);
 
-    if (isset($done[$user])) {
-        continue; // už hotové
-    }
-
     $password = "cajovna-2025-" . bruteForce($data[$i][2], 10);
 
+    // Chat
     fwrite($fp, $user . ":" . $password . PHP_EOL);
-    fflush($fp); // 🔥 okamžitý zápis na disk
+    fflush($fp);
 
     
 }
 
+// Chat
 fclose($fp);
 
-/**
- * Volitelně: převod textáku na JSON (jen pro výstup)
- */
-$result = [];
-foreach (file($path, FILE_IGNORE_NEW_LINES) as $line) {
-    if (strpos($line, ":") !== false) {
-        [$u, $p] = explode(":", $line, 2);
-        $result[$u] = $p;
-    }
-}
 
 echo json_encode("DONE");
