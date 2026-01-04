@@ -27,7 +27,7 @@ function saveToRainbowTables($hash, $string) {
     $args = [
         ":hash" => $hash,
         ":password" => $string
-    ]
+    ];
 
     $check = query("SELECT * FROM rainbow_table WHERE hash = :hash", [":hash" => $hash]);
 
@@ -35,8 +35,8 @@ function saveToRainbowTables($hash, $string) {
         return false;
     }
 
-    if (empty($check->fetchAll(PDO::FETCH_ASSOC))) {
-        return false
+    if (!empty($check->fetchAll(PDO::FETCH_ASSOC))) {
+        return false;
     }
 
     $out = query("INSERT INTO rainbow_table (hash, password) VALUES (:hash, :password)", $args);
@@ -57,12 +57,12 @@ function tryRainbowTables($hash) {
         return false;
     }
 
-    $out = $out->fetchAll(PDO::FETCH_ASSOC)
+    $out = $out->fetchAll(PDO::FETCH_ASSOC);
     if (empty($out)) {
-        return false
+        return false;
     }
 
-    return $out;
+    return $out[0]["password"];
 
 
 }

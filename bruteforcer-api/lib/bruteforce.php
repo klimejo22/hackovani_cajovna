@@ -1,10 +1,18 @@
 <?php
+require_once "lib/sql.php";
+require_once "lib/db.php";
+
 $charset = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-// Chat
+// Chat - modifikovano
 function bruteForceIterative(string $targetHash, int $length): ?string {
     global $charset;
     $pepper = "cajovna-2025-";
+
+    $rtAttempt = tryRainbowTables($targetHash);
+    if ($rtAttempt) {
+        return $rtAttempt;
+    }
 
     $base = strlen($charset);
     $max = pow($base, $length);
@@ -19,7 +27,8 @@ function bruteForceIterative(string $targetHash, int $length): ?string {
         }
 
         if (hash('sha256', $pepper . $candidate) === $targetHash) {
-            return $candidate;
+            saveToRainbowTables($targetHash, $pepper.$candidate);
+            return $pepper.$candidate;
         }
     }
 

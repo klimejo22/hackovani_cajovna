@@ -8,15 +8,21 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 $input = json_decode(file_get_contents("php://input"), true);   // Chat
 
-if (!isset($input["hash"])) {
+if (isset($_POST["hash"])) {
+    $hash = $_POST["hash"];
+} else if (!isset($input["hash"])) {
     echo "Spatny vstup";
     exit;
+} else {
+    $hash = $input["hash"];
 }
 
-$result = bruteForce($input["hash"], 8);
+
+
+$result = bruteForce($hash, 8);
 
 if ($result !== null) {
-    echo "cajovna-2025-" . $result;
+    echo $result;
 } else {
     echo "Nenalezeno";
 }
