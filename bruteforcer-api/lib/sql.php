@@ -13,13 +13,13 @@ function query(string $sql, array $args = []) {
         return array();
         
     } catch (PDOException $e) {
-        return $e;
+        return false;
     }
      
 }
 
 function isQueryInvalid($qoutput) {
-    return empty($qoutput) || gettype($qoutput) == "PDOException";
+    return $qoutput === false;
 }
 
 // Bruteforcer modifikace
@@ -69,7 +69,7 @@ function tryRainbowTables($hash) {
 }
 
 function loadProgress($hash) {
-    $out = query("SELECT length, position FROM brute_progress WHERE hash = :hash ORDER BY ID DESC LIMIT 1", [":hash" => $hash]);
+    $out = query("SELECT length, position FROM hash_progress WHERE hash = :hash ORDER BY updated_at DESC LIMIT 1", [":hash" => $hash]);
     
     if (isQueryInvalid($out)) {
         return false;
@@ -84,18 +84,18 @@ function loadProgress($hash) {
 }
 
 function saveProgress($hash, $length, $position) {
-    $q = "INSERT INTO brute_progress (hash, length, position) VALUES (:hash, :length, :position) ON DUPLICATE KEY UPDATE length = VALUES(length), position = VALUES(position)";
-    $a = [
-        ":hash" => $hash,
-        ":length" => $length,
-        ":position" => $position
-    ];
-    return !isQueryInvalid(query($q,$a));
+    $q = "INSERT INTO hash_progress (hash, length, position)
+          VALUES (:hash, :length, :position)
+          ON DUPLICATE KEY UPDATE
+            length = VALUES(length),
+            position = VALUES(position)";
 
+    $a = [":hash"=>$hash, ":length"=>$length, ":position"=>$position];
+    return !isQueryInvalid(query($q,$a));
 }
 
 function clearProgress(string $hash) {
-    $out = query("DELETE FROM brute_progress WHERE hash = :hash", [":hash" => $hash]);
+    $out = query("DELETE FROM hash_progress WHERE hash = :hash", [":hash" => $hash]);
     
     return !isQueryInvalid($out);
 }
