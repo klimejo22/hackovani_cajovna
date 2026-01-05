@@ -4,7 +4,7 @@ require_once "lib/db.php";
 
 $charset = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-// Chat - modifikovano (algoritmus pomoci chata vse ostatni ja)
+// Chat - modifikovano (algoritmus pomoci chata vse ostatni ja pokud neni receno jinak jinde)
 function bruteForceIterative(string $targetHash, int $length): ?string {
     global $charset;
     $pepper = "cajovna-2025-";
@@ -28,6 +28,7 @@ function bruteForceIterative(string $targetHash, int $length): ?string {
 
         if (hash('sha256', $pepper . $candidate) === $targetHash) {
             saveToRainbowTables($targetHash, $pepper.$candidate);
+            clearProgress($targetHash);
             return $pepper.$candidate;
         }
     }

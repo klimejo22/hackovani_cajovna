@@ -75,7 +75,12 @@ function loadProgress($hash) {
         return false;
     }
 
-    return $out->fetchAll(PDO::FETCH_ASSOC)[0];
+    $r = $out->fetchAll(PDO::FETCH_ASSOC);
+    if (!empty($r)) {
+        return $r[0];
+    }
+    
+    return false;
 }
 
 function saveProgress($hash, $length, $position) {
@@ -85,12 +90,12 @@ function saveProgress($hash, $length, $position) {
         ":length" => $length,
         ":position" => $position
     ];
-    return isQueryInvalid(query($q,$a));
+    return !isQueryInvalid(query($q,$a));
 
 }
 
 function clearProgress(string $hash) {
     $out = query("DELETE FROM brute_progress WHERE hash = :hash", [":hash" => $hash]);
     
-    return isQueryInvalid($out);
+    return !isQueryInvalid($out);
 }
