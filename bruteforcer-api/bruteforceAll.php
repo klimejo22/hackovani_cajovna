@@ -1,13 +1,9 @@
 <?php
-require_once "lib/bruteforce.php";
-require_once "lib/csvToArray.php";
-require_once "lib/sql.php";
-require_once "lib/db.php";
 
 header("Content-Type: application/json; charset=utf-8");
 
 // DOCASNE
-header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
@@ -15,6 +11,12 @@ ini_set('max_execution_time', '0');
 set_time_limit(0);
 ignore_user_abort(true);
 //
+
+require_once "lib/bruteforce.php";
+require_once "lib/csvToArray.php";
+require_once "lib/sql.php";
+require_once "lib/db.php";
+
 
 function normalizeString($str) {
     $str = mb_strtolower($str, 'UTF-8');

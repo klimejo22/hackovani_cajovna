@@ -1,9 +1,6 @@
 <?php
 // define = vytvoreni konstanty
-define('DB_NAME', 'd315069_cajovna');
-define('DB_USER', 'a315069_cajovna');
-define('DB_PASSWORD', 'LTchwQc7');
-define('DB_HOST', 'md397.wedos.net');
+require_once __DIR__."/../secrets.php";
 
 global $db;
 $db = new PDO(

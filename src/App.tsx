@@ -30,7 +30,7 @@ function App() {
     })
 
     const data = await res.text();
-    setResult(data);
+    setResult("Vysledek je: " + data);
   }
 
   return (
@@ -44,7 +44,7 @@ function App() {
       />
       <button onClick={handleCheckHash}>Odhashovat</button>
       <ComputeAll setResult={setResult}></ComputeAll>
-      <div>Vysledek je: {result}</div>
+      <div>{result}</div>
     </>
   )
 }
