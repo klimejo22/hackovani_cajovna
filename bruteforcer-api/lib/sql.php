@@ -23,6 +23,7 @@ function isQueryInvalid($qoutput) {
 }
 
 // Bruteforcer modifikace
+// SQL queries od chata
 function saveToRainbowTables($hash, $string) {
     $args = [
         ":hash" => $hash,
@@ -65,4 +66,31 @@ function tryRainbowTables($hash) {
     return $out[0]["password"];
 
 
+}
+
+function loadProgress($hash) {
+    $out = query("SELECT length, position FROM brute_progress WHERE hash = :hash ORDER BY ID DESC LIMIT 1", [":hash" => $hash]);
+    
+    if (isQueryInvalid($out)) {
+        return false;
+    }
+
+    return $out->fetchAll(PDO::FETCH_ASSOC)[0];
+}
+
+function saveProgress($hash, $length, $position) {
+    $q = "INSERT INTO brute_progress (hash, length, position) VALUES (:hash, :length, :position) ON DUPLICATE KEY UPDATE length = VALUES(length), position = VALUES(position)";
+    $a = [
+        ":hash" => $hash,
+        ":length" => $length,
+        ":position" => $position
+    ];
+    return isQueryInvalid(query($q,$a));
+
+}
+
+function clearProgress(string $hash) {
+    $out = query("DELETE FROM brute_progress WHERE hash = :hash", [":hash" => $hash]);
+    
+    return isQueryInvalid($out);
 }
