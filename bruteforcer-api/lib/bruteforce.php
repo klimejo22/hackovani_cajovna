@@ -14,6 +14,11 @@ function bruteForceIterative(string $targetHash, int $length): ?string {
         return $rtAttempt;
     }
 
+    // $progress = loadProgress($targetHash);
+    // if (!$progress) {
+        
+    // }
+
     $base = strlen($charset);
     $max = pow($base, $length);
 
@@ -28,7 +33,7 @@ function bruteForceIterative(string $targetHash, int $length): ?string {
 
         if (hash('sha256', $pepper . $candidate) === $targetHash) {
             saveToRainbowTables($targetHash, $pepper.$candidate);
-            clearProgress($targetHash);
+            // clearProgress($targetHash);
             return $pepper.$candidate;
         }
     }
