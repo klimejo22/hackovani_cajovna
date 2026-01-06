@@ -1,5 +1,5 @@
 import type React from "react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { baseUrl } from "../utils/config"
 
 export interface AllProps {
@@ -13,33 +13,7 @@ export const ComputeAll : React.FC<AllProps> = ({setResult}) => {
     const [status, setStatus] = useState(DEFAULT_STATUS)
     const [count, setCount] = useState(1)
 
-    // const poll = async () => {  // Chat: upraveno
-    //     setCount(prev => prev + 1)
-
-    //     const res = await fetch(baseUrl + "bruteforceAll.php")
-    //     const data = await res.text()
-
-    //     if (data === "DONE") {
-    //         setStatus("DONE")
-    //         setResult("Hotovo, .txt si stahnete zde")
-    //     }
-    //     else if (data != ERR_MSG) {
-    //         setResult("CHYBA: " + data)
-    //         console.log(data)
-    //         console.log(ERR_MSG)
-    //         setStatus("DONE_WITH_ERRORS")
-    //     }
-    // }
-
-    // useEffect(() => {   
-    //     if (status === "RUNNING") {
-    //         const id = setInterval(poll, 1000)  // Chat
-    //         return () => clearInterval(id)  // Chat
-    //     }
-    // }, [status])
-
-
-
+    // Known issue: ten while je blbe
     const handleClick = async () => {
         alert("TATO FCE TRVA DLOUHO")
         setResult("Nacitani, toto bude trvat dlouho....")
@@ -56,13 +30,13 @@ export const ComputeAll : React.FC<AllProps> = ({setResult}) => {
                     setStatus("DONE")
                     setResult("Hotovo, .txt si stahnete zde")
                 }
-                // else if (data != ERR_MSG) {
-                //     setResult("CHYBA: " + data)
-                //     console.log(data)
-                //     console.log(ERR_MSG)
-                //     setStatus("DONE_WITH_ERRORS")
-                //     break;
-                // }
+                else if (data != ERR_MSG) {
+                    setResult("CHYBA: " + data)
+                    console.log(data)
+                    console.log(ERR_MSG)
+                    setStatus("DONE_WITH_ERRORS")
+                    break;
+                }
 
             } catch (error) {
                 setResult("CHYBA - " + error)

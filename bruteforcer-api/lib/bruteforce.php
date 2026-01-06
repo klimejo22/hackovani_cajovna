@@ -6,20 +6,12 @@ $charset = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 define("TRIES_TO_SAVE", 10000);
 // Chat - modifikovano (algoritmus pomoci chata vse ostatni ja pokud neni receno jinak jinde)
-function bruteForceIterative(string $targetHash, int $length, $start = 0): ?string {
+function bruteForceIterative(string $targetHash, int $length, int $start = 0): ?string {
     global $charset;
     $pepper = "cajovna-2025-";
 
     $rtAttempt = tryRainbowTables($targetHash);
-    if ($rtAttempt) {
-        return $rtAttempt;
-    }
-
-    $start = 0;
-    $progress = loadProgress($targetHash);
-    if ($progress && $progress['length'] == $length) {
-        $start = intval($progress["position"]);
-    }
+    if ($rtAttempt) return $rtAttempt;
 
     $base = strlen($charset);
     $max = pow($base, $length);
@@ -39,10 +31,9 @@ function bruteForceIterative(string $targetHash, int $length, $start = 0): ?stri
             return $pepper.$candidate;
         }
 
-        if ($i % TRIES_TO_SAVE === 0) {
+        if ($i > 0 && $i % TRIES_TO_SAVE === 0) {
             saveProgress($targetHash, $length, $i);
         }
-        // saveProgress($targetHash, $length, $i);
     }
 
     return null;
@@ -58,6 +49,7 @@ function bruteForce(string $hash, int $maxLength): ?string {
         $startLength = 1;
         $startPos    = 0;
     }
+    
     for ($l = $startLength; $l <= $maxLength; $l++) {
         $res = bruteForceIterative(
             $hash,
